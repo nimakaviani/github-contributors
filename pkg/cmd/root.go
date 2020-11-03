@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/nimakaviani/github-contributors/pkg/analyzer"
+	"github.com/nimakaviani/github-contributors/pkg/scraper"
 	"github.com/spf13/cobra"
 )
 
@@ -25,8 +26,8 @@ var (
 				os.Exit(1)
 			}
 
-			println("> pulling data from repo", repo)
-			users, err := analyzer.GetContribs(repo)
+			scraper.Log("> pulling data from repo", repo)
+			users, err := scraper.GetContribs(repo)
 			if err != nil {
 				println(err.Error())
 				os.Exit(1)
@@ -34,17 +35,17 @@ var (
 
 			charter := analyzer.NewCharter()
 
-			println("> building charter ...")
+			scraper.Log("> building charter ...")
 			for _, user := range users {
-				println("   user", user.Login)
+				scraper.Log("   user", user.Login)
 				err := charter.Build(user.Login)
 				if err != nil {
 					println(err.Error())
 				}
 			}
 
-			println("> done")
-			println(">> RESULTS")
+			scraper.Log("> done")
+			scraper.Log(">> RESULTS")
 			charter.Write(expand)
 		},
 	}
@@ -60,4 +61,6 @@ func Execute() {
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&repo, "repo", "r", "", "project repo")
 	rootCmd.PersistentFlags().BoolVarP(&expand, "expand", "e", true, "expand user info")
+	rootCmd.PersistentFlags().BoolVarP(&scraper.Anonymous, "unauthenticated", "u", false, "unauthenticated gh call")
+	rootCmd.PersistentFlags().BoolVarP(&scraper.Debug, "debug", "d", false, "debug mode")
 }

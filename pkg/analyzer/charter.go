@@ -1,14 +1,12 @@
 package analyzer
 
 import (
-	"bufio"
 	"fmt"
 	"math"
-	"os/exec"
 	"regexp"
-	"strings"
 
 	"github.com/agnivade/levenshtein"
+	"github.com/nimakaviani/github-contributors/pkg/scraper"
 )
 
 const (
@@ -35,47 +33,29 @@ func NewCharter() *charter {
 }
 
 func (c *charter) Build(user string) error {
-	cmd := exec.Command("hack/github-email.sh", user)
-	out, err := cmd.Output()
+	email, err := scraper.Find(user)
 	if err != nil {
 		return err
 	}
 
-	return c.parse(user, string(out))
+	return c.parse(user, email)
 }
 
-func (c *charter) parse(login, output string) error {
-	var (
-		details Details
-		err     error
-	)
-
-	scanner := bufio.NewScanner(strings.NewReader(output))
-	for scanner.Scan() {
-		line := scanner.Text()
-
-		if strings.Contains(line, "@") && !strings.Contains(line, "noreply") {
-			details, err = extract(login, line)
-			if err != nil {
-				return err
-			}
-
-			if !details.trusted {
-				continue
-			}
-
-			users := c.charterMap[details.org]
-			if users == nil {
-				users = make(map[string]Details)
-			}
-			indexedUsers := users.(map[string]Details)
-			indexedUsers[login] = details
-			c.charterMap[details.org] = indexedUsers
-			break
-		}
+func (c *charter) parse(login, email string) error {
+	details, err := extract(login, email)
+	if err != nil {
+		return err
 	}
 
-	if !details.trusted {
+	if details.trusted {
+		users := c.charterMap[details.org]
+		if users == nil {
+			users = make(map[string]Details)
+		}
+		indexedUsers := users.(map[string]Details)
+		indexedUsers[login] = details
+		c.charterMap[details.org] = indexedUsers
+	} else {
 		unknowns := c.charterMap[Unknown].(map[string]Details)
 		unknowns[login] = Details{org: Unknown}
 		c.charterMap[Unknown] = unknowns
