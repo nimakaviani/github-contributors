@@ -1,4 +1,4 @@
-package analyzer
+package charter
 
 import (
 	"fmt"
@@ -20,25 +20,32 @@ type charter struct {
 	charterMap map[string]interface{}
 }
 
-func NewCharter() *charter {
+func Build(users []scraper.User) *charter {
 	c := &charter{
 		charterMap: make(map[string]interface{}),
 	}
 
 	c.charterMap[Unknown] = make(map[string]Details)
-	return c
-}
 
-func (c *charter) Build(user string) error {
-	email, err := scraper.Find(user)
-	if err != nil {
-		unknowns := c.charterMap[Unknown].(map[string]Details)
-		unknowns[user] = Details{org: Unknown}
-		c.charterMap[Unknown] = unknowns
-		return err
+	for _, user := range users {
+		println("->   user", user.Login)
+
+		email, err := scraper.Find(user.Login)
+		if err != nil {
+			unknowns := c.charterMap[Unknown].(map[string]Details)
+			unknowns[user.Login] = Details{org: Unknown}
+			c.charterMap[Unknown] = unknowns
+			continue
+		}
+
+		err = c.parse(user.Login, email)
+
+		if err != nil {
+			scraper.Log(user.Login, err.Error())
+		}
 	}
 
-	return c.parse(user, email)
+	return c
 }
 
 func (c *charter) parse(login, email string) error {
