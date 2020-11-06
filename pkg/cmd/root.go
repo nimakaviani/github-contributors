@@ -5,9 +5,11 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/cheggaaa/pb/v3"
+	"github.com/spf13/cobra"
+
 	"github.com/nimakaviani/github-contributors/pkg/analyzer"
 	"github.com/nimakaviani/github-contributors/pkg/scraper"
-	"github.com/spf13/cobra"
 )
 
 var (
@@ -35,17 +37,21 @@ var (
 
 			charter := analyzer.NewCharter()
 
+			bar := pb.StartNew(len(users))
+
 			scraper.Log("> building charter ...")
 			for _, user := range users {
-				println("->   user", user.Login)
+				// println("->   user", user.Login)
 				err := charter.Build(user.Login)
 				if err != nil {
 					scraper.Log(user.Login, err.Error())
 				}
+				bar.Increment()
 			}
 
 			scraper.Log("> done")
 			scraper.Log(">> RESULTS")
+			bar.Finish()
 			charter.Write(expand)
 		},
 	}
