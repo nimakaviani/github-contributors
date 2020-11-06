@@ -37,10 +37,10 @@ var (
 
 			scraper.Log("> building charter ...")
 			for _, user := range users {
-				scraper.Log("   user", user.Login)
+				println("->   user", user.Login)
 				err := charter.Build(user.Login)
 				if err != nil {
-					println(err.Error())
+					scraper.Log(user.Login, err.Error())
 				}
 			}
 

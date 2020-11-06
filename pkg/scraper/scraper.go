@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
@@ -14,19 +13,25 @@ func Find(user string) (string, error) {
 	// // find from profile
 	ghUser, err := fromProfile(user)
 	if err == nil {
-		Log("found from email")
+		Log(">> found from email", ghUser.Email)
 		return ghUser.Email, nil
 	}
 
 	// find from recent activity
 	email, err := fromEvents(user, ghUser)
 	if err == nil {
-		Log("found from events")
+		Log(">> found from events", email)
 		return email, nil
 	}
 
 	// from repo activities
-	return fromRepos(user, ghUser)
+	email, err = fromRepos(user, ghUser)
+	if err == nil {
+		Log(">> found from repos", email)
+		return email, nil
+	}
+
+	return "", err
 }
 
 func fromProfile(user string) (GithubUser, error) {
@@ -101,45 +106,23 @@ func fromRepos(user string, ghUser GithubUser) (string, error) {
 }
 
 func GetContribs(repo string) ([]User, error) {
-	url := fmt.Sprintf("https://api.github.com/repos/%s/contributors", repo)
-	resp, err := http.Get(url)
-
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, errors.New(string(body))
-	}
-
-	var users []User
-	if err = json.Unmarshal(body, &users); err != nil {
-		return nil, err
-	}
-
-	return users, nil
+	users := []User{}
+	err := QueryGithub("contributors", fmt.Sprintf("https://api.github.com/repos/%s/contributors", repo), &users)
+	return users, err
 }
 
 func QueryGithub(endpoint, url string, content interface{}) error {
 	Log("> query", endpoint, url)
 
-	githubToken := os.Getenv("GH_EMAIL_TOKEN")
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return err
 	}
 
-	if !Anonymous {
-		req.Header.Set("Authorization", fmt.Sprintf("token: %s", githubToken))
-	}
-
 	req.Header.Set("Accept", "application/vnd.github.v3+json")
+	if !Anonymous {
+		req.Header.Set("Authorization", os.ExpandEnv("token $GH_EMAIL_TOKEN"))
+	}
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {

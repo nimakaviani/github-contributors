@@ -2,10 +2,8 @@ package analyzer
 
 import (
 	"fmt"
-	"math"
 	"regexp"
 
-	"github.com/agnivade/levenshtein"
 	"github.com/nimakaviani/github-contributors/pkg/scraper"
 )
 
@@ -35,6 +33,9 @@ func NewCharter() *charter {
 func (c *charter) Build(user string) error {
 	email, err := scraper.Find(user)
 	if err != nil {
+		unknowns := c.charterMap[Unknown].(map[string]Details)
+		unknowns[user] = Details{org: Unknown}
+		c.charterMap[Unknown] = unknowns
 		return err
 	}
 
@@ -47,19 +48,13 @@ func (c *charter) parse(login, email string) error {
 		return err
 	}
 
-	if details.trusted {
-		users := c.charterMap[details.org]
-		if users == nil {
-			users = make(map[string]Details)
-		}
-		indexedUsers := users.(map[string]Details)
-		indexedUsers[login] = details
-		c.charterMap[details.org] = indexedUsers
-	} else {
-		unknowns := c.charterMap[Unknown].(map[string]Details)
-		unknowns[login] = Details{org: Unknown}
-		c.charterMap[Unknown] = unknowns
+	users := c.charterMap[details.org]
+	if users == nil {
+		users = make(map[string]Details)
 	}
+	indexedUsers := users.(map[string]Details)
+	indexedUsers[login] = details
+	c.charterMap[details.org] = indexedUsers
 
 	return nil
 }
@@ -90,9 +85,5 @@ func extract(login, input string) (Details, error) {
 	}
 
 	user, org := orgUser[0][1], orgUser[0][2]
-
-	distance := levenshtein.ComputeDistance(login, user)
-	trusted := distance < int(math.Min(float64(len(login)), float64(len(user))))
-
-	return Details{org: org, alias: user, trusted: trusted}, nil
+	return Details{org: org, alias: user}, nil
 }
