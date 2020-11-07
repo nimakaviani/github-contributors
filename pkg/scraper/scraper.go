@@ -59,7 +59,7 @@ func fromEvents(user string, ghUser GithubUser) (string, error) {
 			commits := e.Payload.Commits
 			if len(commits) == 1 {
 				email := commits[0].Author.Email
-				if email == "" {
+				if email == "" || strings.Contains(email, "noreply") {
 					return "", errors.New("not found")
 				}
 				return email, nil

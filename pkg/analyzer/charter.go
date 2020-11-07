@@ -2,9 +2,11 @@ package analyzer
 
 import (
 	"fmt"
+	"os"
 	"regexp"
 
 	"github.com/nimakaviani/github-contributors/pkg/scraper"
+	"github.com/olekukonko/tablewriter"
 )
 
 const (
@@ -14,6 +16,7 @@ const (
 type Details struct {
 	alias string
 	org   string
+	email string
 }
 
 type charter struct {
@@ -59,30 +62,40 @@ func (c *charter) parse(login, email string) error {
 }
 
 func (c *charter) Write(expand bool) {
+	table := tablewriter.NewWriter(os.Stdout)
+	table.SetHeader([]string{"Org", "GitHub Id", "email"})
+	table.SetAutoMergeCells(true)
+	table.SetRowLine(true)
+	table.SetBorder(false)
+
+	data := make([][]string, 0)
+
 	for org, users := range c.charterMap {
-		fmt.Printf("> org: %s (%d)\n", org, len(users.(map[string]Details)))
 		if !expand {
 			continue
 		}
 
+		count := len(users.(map[string]Details))
 		for login, details := range users.(map[string]Details) {
-			fmt.Printf("\t%s %s@\n", login, details.alias)
+			data = append(data, []string{fmt.Sprintf("%s (%d)", org, count), login, details.email})
 		}
 	}
+	table.AppendBulk(data)
+	table.Render()
 }
 
-func extract(login, input string) (Details, error) {
-	rg, err := regexp.Compile("([a-z0-9]+)@([a-z0-9]+).[a-z]+")
+func extract(login, email string) (Details, error) {
+	rg, err := regexp.Compile("([a-z0-9]+)@([a-z0-9]+).([a-z]+)$")
 	if err != nil {
 		return Details{}, err
 	}
 
-	orgUser := rg.FindAllStringSubmatch(input, -1)
+	orgUser := rg.FindAllStringSubmatch(email, -1)
 
-	if len(orgUser) < 1 || len(orgUser[0]) < 3 {
+	if len(orgUser) < 1 || len(orgUser[0]) < 4 {
 		return Details{}, nil
 	}
 
-	user, org := orgUser[0][1], orgUser[0][2]
-	return Details{org: org, alias: user}, nil
+	user, org, domain := orgUser[0][1], orgUser[0][2], orgUser[0][3]
+	return Details{org: fmt.Sprintf("%s.%s", org, domain), alias: user, email: email}, nil
 }
