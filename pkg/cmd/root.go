@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/cheggaaa/pb/v3"
 	"github.com/spf13/cobra"
 
 	"github.com/nimakaviani/github-contributors/pkg/analyzer"
@@ -13,8 +12,10 @@ import (
 )
 
 var (
-	repo   string
-	expand bool
+	repo         string
+	expand       bool
+	enableIssues bool
+	issueCount   int
 
 	rootCmd = &cobra.Command{
 		Use:   "github-contrib",
@@ -28,31 +29,20 @@ var (
 				os.Exit(1)
 			}
 
-			scraper.Log("> pulling data from repo", repo)
-			users, err := scraper.GetContribs(repo)
-			if err != nil {
+			charter := analyzer.NewCharter()
+			// if err := charter.Process(repo); err != nil {
+			// 	println(err.Error())
+			// 	os.Exit(1)
+			// }
+
+			issues := analyzer.NewIssues(charter, enableIssues, issueCount)
+			if err := issues.Process(repo); err != nil {
 				println(err.Error())
 				os.Exit(1)
 			}
 
-			charter := analyzer.NewCharter()
-
-			bar := pb.StartNew(len(users))
-
-			scraper.Log("> building charter ...")
-			for _, user := range users {
-				// println("->   user", user.Login)
-				err := charter.Build(user.Login)
-				if err != nil {
-					scraper.Log(user.Login, err.Error())
-				}
-				bar.Increment()
-			}
-
-			scraper.Log("> done")
-			scraper.Log(">> RESULTS")
-			bar.Finish()
 			charter.Write(expand)
+			issues.Write()
 		},
 	}
 )
@@ -69,4 +59,6 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&expand, "expand", "e", true, "expand user info")
 	rootCmd.PersistentFlags().BoolVarP(&scraper.Anonymous, "unauthenticated", "u", false, "unauthenticated gh call")
 	rootCmd.PersistentFlags().BoolVarP(&scraper.Debug, "debug", "d", false, "debug mode")
+	rootCmd.PersistentFlags().BoolVarP(&enableIssues, "issues", "i", false, "analyze issues")
+	rootCmd.PersistentFlags().IntVarP(&issueCount, "count", "c", 10, "count of issues to analyze")
 }
