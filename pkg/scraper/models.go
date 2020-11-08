@@ -35,3 +35,11 @@ type Repo struct {
 type RepoCommits struct {
 	Commit Commit
 }
+
+type Issue struct {
+	Id                int
+	Title             string
+	User              User
+	State             string
+	AuthorAssociation string `json:"author_association"`
+}

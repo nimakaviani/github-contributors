@@ -105,10 +105,16 @@ func fromRepos(user string, ghUser GithubUser) (string, error) {
 	return "", errors.New("not found")
 }
 
-func GetContribs(repo string) ([]User, error) {
+func Contributors(repo string) ([]User, error) {
 	users := []User{}
 	err := QueryGithub("contributors", fmt.Sprintf("https://api.github.com/repos/%s/contributors", repo), &users)
 	return users, err
+}
+
+func Issues(repo string, count int) ([]Issue, error) {
+	issues := []Issue{}
+	err := QueryGithub("issues", fmt.Sprintf("https://api.github.com/repos/%s/issues?per_page=%d", repo, count), &issues)
+	return issues, err
 }
 
 func QueryGithub(endpoint, url string, content interface{}) error {
