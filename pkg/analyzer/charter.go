@@ -107,8 +107,18 @@ func (c *charter) parse(login, email string) error {
 
 func (c *charter) Write(expand bool) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Org", "Association", "GitHub Id", "Email"})
-	table.SetHeaderColor(tablewriter.Colors{tablewriter.Bold}, tablewriter.Colors{tablewriter.Bold}, tablewriter.Colors{tablewriter.Bold}, tablewriter.Colors{tablewriter.Bold})
+	table.SetHeader([]string{
+		"Org",
+		"Association",
+		"GitHubId",
+		"Email",
+	})
+	table.SetHeaderColor(
+		tablewriter.Colors{tablewriter.Bold},
+		tablewriter.Colors{tablewriter.Bold},
+		tablewriter.Colors{tablewriter.Bold},
+		tablewriter.Colors{tablewriter.Bold},
+	)
 	table.SetAutoMergeCells(true)
 	table.SetRowLine(true)
 	table.SetBorder(true)
@@ -121,7 +131,12 @@ func (c *charter) Write(expand bool) {
 
 		count := len(users.(map[string]*Details))
 		for login, details := range users.(map[string]*Details) {
-			data = append(data, []string{fmt.Sprintf("%s (%d)", org, count), details.association, login, details.email})
+			data = append(data, []string{
+				fmt.Sprintf("%s (%d)", org, count),
+				details.association,
+				login,
+				details.email,
+			})
 		}
 	}
 	table.AppendBulk(data)

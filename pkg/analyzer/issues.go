@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/cheggaaa/pb/v3"
+	"github.com/cheggaaa/pb"
 	"github.com/nimakaviani/github-contributors/pkg/scraper"
 	"github.com/olekukonko/tablewriter"
 )
@@ -30,7 +30,8 @@ func NewIssues(c *charter, count int) *issues {
 	}
 }
 
-func (i *issues) Process(repo string, bar *pb.ProgressBar) error {
+func (i *issues) Process(repo string) error {
+	bar := pb.StartNew(i.count)
 	issues, err := scraper.Issues(repo, i.count)
 	if err != nil {
 		return err
@@ -49,12 +50,20 @@ func (i *issues) Process(repo string, bar *pb.ProgressBar) error {
 
 	}
 
+	bar.Finish()
 	return nil
 }
 
 func (i *issues) Write() {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Org", "GitHubId", "Email", "Issue / PR", "Association", "State"})
+	table.SetHeader([]string{
+		"Org",
+		"GitHubId",
+		"Email",
+		"Issue / PR",
+		"Association",
+		"State",
+	})
 	table.SetHeaderColor(
 		tablewriter.Colors{tablewriter.Bold},
 		tablewriter.Colors{tablewriter.Bold},
