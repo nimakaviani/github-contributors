@@ -21,6 +21,7 @@ const (
 var (
 	repo   string
 	expand bool
+	count  int
 
 	rootCmd = &cobra.Command{
 		Use:   "github-contrib",
@@ -29,7 +30,7 @@ var (
 		Run: func(cmd *cobra.Command, args []string) {
 
 			charter := analyzer.NewCharter()
-			if err := charter.Process(repo); err != nil {
+			if err := charter.Process(repo, count); err != nil {
 				println(err.Error())
 				os.Exit(1)
 			}
@@ -63,4 +64,5 @@ in your terminal: "export GH_EMAIL_TOKEN=<token>"
 	rootCmd.PersistentFlags().BoolVarP(&expand, "expand", "e", true, "expand user info")
 	rootCmd.PersistentFlags().BoolVarP(&scraper.Anonymous, "unauthenticated", "u", false, "unauthenticated gh call")
 	rootCmd.PersistentFlags().BoolVarP(&scraper.Debug, "debug", "d", false, "debug mode")
+	rootCmd.PersistentFlags().IntVarP(&count, "count", "c", 30, "count of items to analyze")
 }

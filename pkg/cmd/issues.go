@@ -12,12 +12,9 @@ import (
 
 func init() {
 	rootCmd.AddCommand(issueCmd)
-	issueCmd.PersistentFlags().IntVarP(&issueCount, "count", "c", 10, "count of issues to analyze")
 }
 
 var (
-	issueCount int
-
 	issueCmd = &cobra.Command{
 		Use:   "issues",
 		Short: "Analyze issues",
@@ -31,7 +28,8 @@ var (
 			}
 
 			charter := analyzer.NewCharter()
-			issues := analyzer.NewActivity(models.Issue, charter, issueCount)
+
+			issues := analyzer.NewActivity(models.Issue, charter, count)
 			if err := issues.Process(repo); err != nil {
 				println(err.Error())
 				os.Exit(1)

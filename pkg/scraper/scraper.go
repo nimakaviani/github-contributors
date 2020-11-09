@@ -108,9 +108,9 @@ func fromRepos(user string, ghUser models.User) (string, error) {
 	return "", errors.New("not found")
 }
 
-func Contributors(repo string) ([]models.User, error) {
+func Contributors(repo string, count int) ([]models.User, error) {
 	users := []models.User{}
-	err := QueryGithub("contributors", fmt.Sprintf("https://api.github.com/repos/%s/contributors", repo), &users)
+	err := QueryGithub("contributors", fmt.Sprintf("https://api.github.com/repos/%s/contributors?per_page=%d", repo, count), &users)
 	return users, err
 }
 

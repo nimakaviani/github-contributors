@@ -10,19 +10,16 @@ import (
 
 func init() {
 	rootCmd.AddCommand(prCmd)
-	prCmd.PersistentFlags().IntVarP(&prCount, "count", "c", 10, "count of PRs to analyze")
 }
 
 var (
-	prCount int
-
 	prCmd = &cobra.Command{
 		Use:   "prs",
 		Short: "Analyze PRs",
 		Long:  `Analyze all contributors and companies submitting pull requests to the repo`,
 		Run: func(cmd *cobra.Command, args []string) {
 			charter := analyzer.NewCharter()
-			issues := analyzer.NewActivity(models.PR, charter, prCount)
+			issues := analyzer.NewActivity(models.PR, charter, count)
 			if err := issues.Process(repo); err != nil {
 				println(err.Error())
 				os.Exit(1)

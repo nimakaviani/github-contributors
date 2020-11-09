@@ -36,9 +36,9 @@ func NewCharter() *charter {
 	return c
 }
 
-func (c *charter) Process(repo string) error {
+func (c *charter) Process(repo string, count int) error {
 	scraper.Log("> pulling data from repo", repo)
-	users, err := scraper.Contributors(repo)
+	users, err := scraper.Contributors(repo, count)
 	if err != nil {
 		return err
 	}
