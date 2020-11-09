@@ -11,6 +11,13 @@ import (
 	"github.com/nimakaviani/github-contributors/pkg/scraper"
 )
 
+type Activity int
+
+const (
+	Issue = iota
+	PR
+)
+
 var (
 	repo   string
 	expand bool

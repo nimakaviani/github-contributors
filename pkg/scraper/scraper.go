@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 	"strings"
+
+	"github.com/nimakaviani/github-contributors/pkg/models"
 )
 
 func Find(user string) (string, error) {
@@ -34,8 +36,8 @@ func Find(user string) (string, error) {
 	return "", err
 }
 
-func fromProfile(user string) (GithubUser, error) {
-	ghUser := GithubUser{}
+func fromProfile(user string) (models.User, error) {
+	ghUser := models.User{}
 	if err := QueryGithub("profile", fmt.Sprintf("https://api.github.com/users/%s", user), &ghUser); err != nil {
 		return ghUser, err
 	}
@@ -47,8 +49,8 @@ func fromProfile(user string) (GithubUser, error) {
 	return ghUser, nil
 }
 
-func fromEvents(user string, ghUser GithubUser) (string, error) {
-	ghEvents := []GithubEvent{}
+func fromEvents(user string, ghUser models.User) (string, error) {
+	ghEvents := []models.Event{}
 	if err := QueryGithub("events", fmt.Sprintf("https://api.github.com/users/%s/events?per_page=10", user), &ghEvents); err != nil {
 		return "", err
 	}
@@ -77,13 +79,13 @@ func fromEvents(user string, ghUser GithubUser) (string, error) {
 	return "", errors.New("not found")
 }
 
-func fromRepos(user string, ghUser GithubUser) (string, error) {
-	repos := []Repo{}
+func fromRepos(user string, ghUser models.User) (string, error) {
+	repos := []models.Repo{}
 	if err := QueryGithub("repos", fmt.Sprintf("https://api.github.com/users/%s/repos?type=owner&sort=updated&per_page=5", user), &repos); err != nil {
 		return "", err
 	}
 
-	activity := []RepoCommits{}
+	activity := []models.RepoCommits{}
 	for _, r := range repos {
 		if err := QueryGithub("activity", fmt.Sprintf("https://api.github.com/repos/%s/commits", r.FullName), &activity); err != nil {
 			return "", err
@@ -105,15 +107,22 @@ func fromRepos(user string, ghUser GithubUser) (string, error) {
 	return "", errors.New("not found")
 }
 
-func Contributors(repo string) ([]User, error) {
-	users := []User{}
+func Contributors(repo string) ([]models.User, error) {
+	users := []models.User{}
 	err := QueryGithub("contributors", fmt.Sprintf("https://api.github.com/repos/%s/contributors", repo), &users)
 	return users, err
 }
 
-func Issues(repo string, count int) ([]Issue, error) {
-	issues := []Issue{}
-	err := QueryGithub("issues", fmt.Sprintf("https://api.github.com/repos/%s/issues?per_page=%d", repo, count), &issues)
+func Activities(repo string, activity, count int) ([]models.Activity, error) {
+	var activityName string
+	switch activity {
+	case models.Issue:
+		activityName = "issues"
+	default:
+		activityName = "pulls"
+	}
+	issues := []models.Activity{}
+	err := QueryGithub("activity", fmt.Sprintf("https://api.github.com/repos/%s/%s?per_page=%d", repo, activityName, count), &issues)
 	return issues, err
 }
 
