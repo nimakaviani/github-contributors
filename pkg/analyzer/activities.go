@@ -106,7 +106,7 @@ func (i *activities) Write() {
 			activity.userDetails.org,
 			activity.User.Login,
 			activity.userDetails.email,
-			fmt.Sprintf("%s(%s) : %s \n\n %s", activityName, strconv.Itoa(activity.Id), activity.Title, activity.Url),
+			fmt.Sprintf("%s(%s) : %s \n\n %s", activityName, strconv.Itoa(activity.Number), activity.Title, activity.Url),
 			activity.userDetails.association,
 			activity.State,
 		}
