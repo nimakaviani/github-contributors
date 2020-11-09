@@ -39,6 +39,7 @@ type RepoCommits struct {
 type Issue struct {
 	Id                int
 	Title             string
+	Url               string
 	User              User
 	State             string
 	AuthorAssociation string `json:"author_association"`
