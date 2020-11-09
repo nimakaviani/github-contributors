@@ -1,17 +1,13 @@
-package scraper
+package models
 
 type User struct {
-	Login string
 	Id    int
-}
-
-type GithubUser struct {
 	Email string
 	Name  string
 	Login string
 }
 
-type GithubEvent struct {
+type Event struct {
 	Type    string
 	Actor   User
 	Payload Payload
@@ -19,8 +15,8 @@ type GithubEvent struct {
 
 type Commit struct {
 	Message   string
-	Author    GithubUser
-	Committer GithubUser
+	Author    User
+	Committer User
 }
 
 type Payload struct {
@@ -36,7 +32,7 @@ type RepoCommits struct {
 	Commit Commit
 }
 
-type Issue struct {
+type Activity struct {
 	Id                int
 	Title             string
 	Url               string
