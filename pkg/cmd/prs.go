@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"errors"
-	"fmt"
 	"os"
 
 	"github.com/nimakaviani/github-contributors/pkg/analyzer"
@@ -23,13 +21,6 @@ var (
 		Short: "Analyze PRs",
 		Long:  `Analyze all contributors and companies submitting pull requests to the repo`,
 		Run: func(cmd *cobra.Command, args []string) {
-
-			if token := os.Getenv("GH_EMAIL_TOKEN"); token == "" {
-				err := errors.New("GH_EMAIL_TOKEN needs to be set")
-				fmt.Fprintln(os.Stderr, err)
-				os.Exit(1)
-			}
-
 			charter := analyzer.NewCharter()
 			issues := analyzer.NewActivity(models.PR, charter, prCount)
 			if err := issues.Process(repo); err != nil {
