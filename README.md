@@ -5,6 +5,11 @@ Gain some loose understanding of who from what companies contribute to a GitHub 
 
 ## Installation
 
+Simply download the binary for your operating system from the [Release
+Page](https://github.com/nimakaviani/github-contributors/releases).
+
+Or if you are curious enough to build the code, try below:
+
 ```
 go get github.com/nimakaviani/github-contributors
 ```
