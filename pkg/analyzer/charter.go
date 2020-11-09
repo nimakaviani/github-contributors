@@ -46,9 +46,6 @@ func (c *charter) Process(repo string) error {
 	bar := pb.StartNew(len(users))
 	scraper.Log("> building charter ...")
 	for _, user := range users {
-		// if i > 5 {
-		// 	break
-		// }
 		err := c.build(user.Login)
 		if err != nil {
 			scraper.Log(user.Login, err.Error())
