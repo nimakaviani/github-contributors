@@ -22,18 +22,29 @@ type activities struct {
 	charter      *charter
 	count        int
 	activityType models.GHActivity
+	activityName string
 }
 
 func NewActivity(a models.GHActivity, c *charter, count int) *activities {
+	var activityName string
+	switch a {
+	case models.Issue:
+		activityName = "Issue"
+	default:
+		activityName = "PR"
+	}
+
 	return &activities{
 		charter:      c,
 		count:        count,
 		activities:   make([]*EnhancedActivity, 0),
 		activityType: a,
+		activityName: activityName,
 	}
 }
 
 func (i *activities) Process(repo string) error {
+	fmt.Printf("Analyzig the last %d %ss on %s\n", i.count, i.activityName, repo)
 	bar := pb.StartNew(i.count)
 	activities, err := scraper.Activities(repo, int(i.activityType), i.count)
 	if err != nil {
@@ -92,21 +103,13 @@ func (i *activities) Write() {
 		return false
 	})
 
-	var activityName string
-	switch i.activityType {
-	case models.Issue:
-		activityName = "Issue"
-	default:
-		activityName = "PR"
-	}
-
 	data := make([][]string, 0)
 	for _, activity := range activities {
 		row := []string{
 			activity.userDetails.org,
 			activity.User.Login,
 			activity.userDetails.email,
-			fmt.Sprintf("%s(%s) : %s \n\n %s", activityName, strconv.Itoa(activity.Number), activity.Title, activity.Url),
+			fmt.Sprintf("%s(%s) : %s \n\n %s", i.activityName, strconv.Itoa(activity.Number), activity.Title, activity.Url),
 			activity.userDetails.association,
 			activity.State,
 		}
