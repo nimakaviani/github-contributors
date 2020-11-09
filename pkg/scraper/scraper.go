@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"strings"
@@ -122,7 +123,7 @@ func Activities(repo string, activity, count int) ([]models.Activity, error) {
 		activityName = "pulls"
 	}
 	issues := []models.Activity{}
-	err := QueryGithub("activity", fmt.Sprintf("https://api.github.com/repos/%s/%s?per_page=%d", repo, activityName, count), &issues)
+	err := QueryGithub("activity", fmt.Sprintf("https://api.github.com/repos/%s/%s?per_page=%d&state=all&sort=updated", repo, activityName, count), &issues)
 	return issues, err
 }
 
@@ -146,7 +147,11 @@ func QueryGithub(endpoint, url string, content interface{}) error {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return errors.New(fmt.Sprintf("failed with status code %d", resp.StatusCode))
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			return err
+		}
+		return errors.New(fmt.Sprintf("failed with status code %d \n %s", resp.StatusCode, string(body)))
 	}
 
 	return json.NewDecoder(resp.Body).Decode(content)

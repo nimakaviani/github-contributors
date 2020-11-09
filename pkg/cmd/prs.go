@@ -10,7 +10,7 @@ import (
 
 func init() {
 	rootCmd.AddCommand(prCmd)
-	prCmd.PersistentFlags().IntVarP(&prCount, "count", "c", 10, "count of issues to analyze")
+	prCmd.PersistentFlags().IntVarP(&prCount, "count", "c", 10, "count of PRs to analyze")
 }
 
 var (

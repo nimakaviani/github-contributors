@@ -44,12 +44,14 @@ func NewActivity(a models.GHActivity, c *charter, count int) *activities {
 }
 
 func (i *activities) Process(repo string) error {
-	fmt.Printf("Analyzig the last %d %ss on %s\n", i.count, i.activityName, repo)
-	bar := pb.StartNew(i.count)
+	scraper.Log("> fetch activity list ...")
 	activities, err := scraper.Activities(repo, int(i.activityType), i.count)
 	if err != nil {
 		return err
 	}
+
+	fmt.Printf("Analyzig the last %d %ss on %s\n", len(activities), i.activityName, repo)
+	bar := pb.StartNew(len(activities))
 
 	scraper.Log("> reviewing activities ...")
 	for _, activity := range activities {
