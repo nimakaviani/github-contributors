@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/cheggaaa/pb/v3"
 	"github.com/nimakaviani/github-contributors/pkg/analyzer"
 	"github.com/spf13/cobra"
 )
@@ -30,14 +29,12 @@ var (
 				os.Exit(1)
 			}
 
-			bar := pb.StartNew(count)
 			charter := analyzer.NewCharter()
 			issues := analyzer.NewIssues(charter, count)
-			if err := issues.Process(repo, bar); err != nil {
+			if err := issues.Process(repo); err != nil {
 				println(err.Error())
 				os.Exit(1)
 			}
-			bar.Finish()
 			issues.Write()
 		},
 	}
