@@ -34,6 +34,7 @@ type RepoCommits struct {
 
 type Activity struct {
 	Id                int
+	Number            int
 	Title             string
 	Url               string
 	User              User
