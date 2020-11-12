@@ -9,6 +9,7 @@ import (
 
 	"github.com/nimakaviani/github-contributors/pkg/analyzer"
 	"github.com/nimakaviani/github-contributors/pkg/scraper"
+	"github.com/nimakaviani/github-contributors/pkg/utils"
 )
 
 type Activity int
@@ -29,7 +30,7 @@ var (
 
 		Run: func(cmd *cobra.Command, args []string) {
 
-			charter := analyzer.NewCharter()
+			charter := analyzer.NewCharter(scraper.NewGithubScraper("https://api.github.com"))
 			if err := charter.Process(repo, count); err != nil {
 				println(err.Error())
 				os.Exit(1)
@@ -63,6 +64,6 @@ in your terminal: "export GH_EMAIL_TOKEN=<token>"
 	rootCmd.PersistentFlags().StringVarP(&repo, "repo", "r", "", "project repo")
 	rootCmd.PersistentFlags().BoolVarP(&expand, "expand", "e", true, "expand user info")
 	rootCmd.PersistentFlags().BoolVarP(&scraper.Anonymous, "unauthenticated", "u", false, "unauthenticated gh call")
-	rootCmd.PersistentFlags().BoolVarP(&scraper.Debug, "debug", "d", false, "debug mode")
+	rootCmd.PersistentFlags().BoolVarP(&utils.Debug, "debug", "d", false, "debug mode")
 	rootCmd.PersistentFlags().IntVarP(&count, "count", "c", 30, "count of items to analyze")
 }

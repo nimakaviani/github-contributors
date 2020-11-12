@@ -9,6 +9,7 @@ import (
 	"github.com/cheggaaa/pb"
 	"github.com/nimakaviani/github-contributors/pkg/models"
 	"github.com/nimakaviani/github-contributors/pkg/scraper"
+	"github.com/nimakaviani/github-contributors/pkg/utils"
 	"github.com/olekukonko/tablewriter"
 )
 
@@ -23,15 +24,16 @@ type activities struct {
 	count        int
 	activityType models.GHActivity
 	activityName string
+	scraper      scraper.Scraper
 }
 
-func NewActivity(a models.GHActivity, c *charter, count int) *activities {
-	var activityName string
+func NewActivity(s scraper.Scraper, c *charter, a models.GHActivity, count int) *activities {
+	var an string
 	switch a {
 	case models.Issue:
-		activityName = "Issue"
+		an = "Issue"
 	default:
-		activityName = "PR"
+		an = "PR"
 	}
 
 	return &activities{
@@ -39,13 +41,14 @@ func NewActivity(a models.GHActivity, c *charter, count int) *activities {
 		count:        count,
 		activities:   make([]*EnhancedActivity, 0),
 		activityType: a,
-		activityName: activityName,
+		activityName: an,
+		scraper:      s,
 	}
 }
 
 func (i *activities) Process(repo string) error {
-	scraper.Log("> fetch activity list ...")
-	activities, err := scraper.Activities(repo, int(i.activityType), i.count)
+	utils.Log("> fetch activity list ...")
+	activities, err := i.scraper.Activities(repo, int(i.activityType), i.count)
 	if err != nil {
 		return err
 	}
@@ -53,7 +56,7 @@ func (i *activities) Process(repo string) error {
 	fmt.Printf("Analyzig the last %d %ss on %s\n", len(activities), i.activityName, repo)
 	bar := pb.StartNew(len(activities))
 
-	scraper.Log("> reviewing activities ...")
+	utils.Log("> reviewing activities ...")
 	for _, activity := range activities {
 		bar.Increment()
 

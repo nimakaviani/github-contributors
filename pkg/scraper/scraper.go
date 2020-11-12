@@ -10,36 +10,53 @@ import (
 	"strings"
 
 	"github.com/nimakaviani/github-contributors/pkg/models"
+	"github.com/nimakaviani/github-contributors/pkg/utils"
 )
 
-func Find(user string) (string, error) {
+var Anonymous bool
+
+type Scraper interface {
+	Find(user string) (string, error)
+	Contributors(repo string, count int) ([]models.User, error)
+	Activities(repo string, activity, count int) ([]models.Activity, error)
+}
+
+type githubScraper struct {
+	url string
+}
+
+func NewGithubScraper(url string) Scraper {
+	return &githubScraper{url: url}
+}
+
+func (g githubScraper) Find(user string) (string, error) {
 	// // find from profile
-	ghUser, err := fromProfile(user)
+	ghUser, err := g.fromProfile(user)
 	if err == nil {
-		Log(">> found from email", ghUser.Email)
+		utils.Log(">> found from email", ghUser.Email)
 		return ghUser.Email, nil
 	}
 
 	// find from recent activity
-	email, err := fromEvents(user, ghUser)
+	email, err := g.fromEvents(user, ghUser)
 	if err == nil {
-		Log(">> found from events", email)
+		utils.Log(">> found from events", email)
 		return email, nil
 	}
 
 	// from repo activities
-	email, err = fromRepos(user, ghUser)
+	email, err = g.fromRepos(user, ghUser)
 	if err == nil {
-		Log(">> found from repos", email)
+		utils.Log(">> found from repos", email)
 		return email, nil
 	}
 
 	return "", err
 }
 
-func fromProfile(user string) (models.User, error) {
+func (g githubScraper) fromProfile(user string) (models.User, error) {
 	ghUser := models.User{}
-	if err := QueryGithub("profile", fmt.Sprintf("https://api.github.com/users/%s", user), &ghUser); err != nil {
+	if err := queryGithub("profile", fmt.Sprintf("%s/users/%s", g.url, user), &ghUser); err != nil {
 		return ghUser, err
 	}
 
@@ -50,9 +67,9 @@ func fromProfile(user string) (models.User, error) {
 	return ghUser, nil
 }
 
-func fromEvents(user string, ghUser models.User) (string, error) {
+func (g githubScraper) fromEvents(user string, ghUser models.User) (string, error) {
 	ghEvents := []models.Event{}
-	if err := QueryGithub("events", fmt.Sprintf("https://api.github.com/users/%s/events?per_page=10", user), &ghEvents); err != nil {
+	if err := queryGithub("events", fmt.Sprintf("%s/users/%s/events?per_page=10", g.url, user), &ghEvents); err != nil {
 		return "", err
 	}
 
@@ -80,15 +97,15 @@ func fromEvents(user string, ghUser models.User) (string, error) {
 	return "", errors.New("not found")
 }
 
-func fromRepos(user string, ghUser models.User) (string, error) {
+func (g githubScraper) fromRepos(user string, ghUser models.User) (string, error) {
 	repos := []models.Repo{}
-	if err := QueryGithub("repos", fmt.Sprintf("https://api.github.com/users/%s/repos?type=owner&sort=updated&per_page=5", user), &repos); err != nil {
+	if err := queryGithub("repos", fmt.Sprintf("%s/users/%s/repos?type=owner&sort=updated&per_page=5", g.url, user), &repos); err != nil {
 		return "", err
 	}
 
 	activity := []models.RepoCommits{}
 	for _, r := range repos {
-		if err := QueryGithub("activity", fmt.Sprintf("https://api.github.com/repos/%s/commits", r.FullName), &activity); err != nil {
+		if err := queryGithub("activity", fmt.Sprintf("%s/repos/%s/commits", g.url, r.FullName), &activity); err != nil {
 			return "", err
 		}
 
@@ -108,13 +125,13 @@ func fromRepos(user string, ghUser models.User) (string, error) {
 	return "", errors.New("not found")
 }
 
-func Contributors(repo string, count int) ([]models.User, error) {
+func (g githubScraper) Contributors(repo string, count int) ([]models.User, error) {
 	users := []models.User{}
-	err := QueryGithub("contributors", fmt.Sprintf("https://api.github.com/repos/%s/contributors?per_page=%d", repo, count), &users)
+	err := queryGithub("contributors", fmt.Sprintf("%s/repos/%s/contributors?per_page=%d", g.url, repo, count), &users)
 	return users, err
 }
 
-func Activities(repo string, activity, count int) ([]models.Activity, error) {
+func (g githubScraper) Activities(repo string, activity, count int) ([]models.Activity, error) {
 	var activityName string
 	switch activity {
 	case models.Issue:
@@ -123,12 +140,12 @@ func Activities(repo string, activity, count int) ([]models.Activity, error) {
 		activityName = "pulls"
 	}
 	issues := []models.Activity{}
-	err := QueryGithub("activity", fmt.Sprintf("https://api.github.com/repos/%s/%s?per_page=%d&state=all&sort=updated", repo, activityName, count), &issues)
+	err := queryGithub("activity", fmt.Sprintf("%s/repos/%s/%s?per_page=%d&state=all&sort=updated", g.url, repo, activityName, count), &issues)
 	return issues, err
 }
 
-func QueryGithub(endpoint, url string, content interface{}) error {
-	Log("> query", endpoint, url)
+func queryGithub(endpoint, url string, content interface{}) error {
+	utils.Log("> query", endpoint, url)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -155,13 +172,4 @@ func QueryGithub(endpoint, url string, content interface{}) error {
 	}
 
 	return json.NewDecoder(resp.Body).Decode(content)
-}
-
-func Log(msg ...string) {
-	if Debug {
-		for _, m := range msg {
-			fmt.Printf("%s ", m)
-		}
-		println()
-	}
 }

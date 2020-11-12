@@ -7,6 +7,7 @@ import (
 
 	"github.com/cheggaaa/pb"
 	"github.com/nimakaviani/github-contributors/pkg/scraper"
+	"github.com/nimakaviani/github-contributors/pkg/utils"
 	"github.com/olekukonko/tablewriter"
 )
 
@@ -24,12 +25,14 @@ type Details struct {
 type charter struct {
 	charterMap map[string]interface{}
 	userOrg    map[string]string
+	scraper    scraper.Scraper
 }
 
-func NewCharter() *charter {
+func NewCharter(scraper scraper.Scraper) *charter {
 	c := &charter{
 		charterMap: make(map[string]interface{}),
 		userOrg:    make(map[string]string),
+		scraper:    scraper,
 	}
 
 	c.charterMap[Unknown] = make(map[string]*Details)
@@ -37,25 +40,25 @@ func NewCharter() *charter {
 }
 
 func (c *charter) Process(repo string, count int) error {
-	scraper.Log("> pulling data from repo", repo)
-	users, err := scraper.Contributors(repo, count)
+	utils.Log("> pulling data from repo", repo)
+	users, err := c.scraper.Contributors(repo, count)
 	if err != nil {
 		return err
 	}
 
 	bar := pb.StartNew(len(users))
-	scraper.Log("> building charter ...")
+	utils.Log("> building charter ...")
 	for _, user := range users {
 		err := c.build(user.Login)
 		if err != nil {
-			scraper.Log(user.Login, err.Error())
+			utils.Log(user.Login, err.Error())
 		}
 		bar.Increment()
 	}
 
 	bar.Finish()
-	scraper.Log("> done")
-	scraper.Log(">> RESULTS")
+	utils.Log("> done")
+	utils.Log(">> RESULTS")
 	return nil
 }
 
@@ -74,7 +77,7 @@ func (c *charter) Associate(login, association string) (*Details, error) {
 }
 
 func (c *charter) build(login string) error {
-	email, err := scraper.Find(login)
+	email, err := c.scraper.Find(login)
 	if err != nil {
 		return err
 	}

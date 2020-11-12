@@ -5,6 +5,7 @@ import (
 
 	"github.com/nimakaviani/github-contributors/pkg/analyzer"
 	"github.com/nimakaviani/github-contributors/pkg/models"
+	"github.com/nimakaviani/github-contributors/pkg/scraper"
 	"github.com/spf13/cobra"
 )
 
@@ -18,13 +19,18 @@ var (
 		Short: "Analyze PRs",
 		Long:  `Analyze all contributors and companies submitting pull requests to the repo`,
 		Run: func(cmd *cobra.Command, args []string) {
-			charter := analyzer.NewCharter()
-			issues := analyzer.NewActivity(models.PR, charter, count)
-			if err := issues.Process(repo); err != nil {
+			s := scraper.NewGithubScraper("https://api.github.com")
+			prs := analyzer.NewActivity(
+				s,
+				analyzer.NewCharter(s),
+				models.PR,
+				count,
+			)
+			if err := prs.Process(repo); err != nil {
 				println(err.Error())
 				os.Exit(1)
 			}
-			issues.Write()
+			prs.Write()
 		},
 	}
 )

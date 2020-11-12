@@ -7,6 +7,7 @@ import (
 
 	"github.com/nimakaviani/github-contributors/pkg/analyzer"
 	"github.com/nimakaviani/github-contributors/pkg/models"
+	"github.com/nimakaviani/github-contributors/pkg/scraper"
 	"github.com/spf13/cobra"
 )
 
@@ -27,9 +28,13 @@ var (
 				os.Exit(1)
 			}
 
-			charter := analyzer.NewCharter()
-
-			issues := analyzer.NewActivity(models.Issue, charter, count)
+			s := scraper.NewGithubScraper("https://api.github.com")
+			issues := analyzer.NewActivity(
+				s,
+				analyzer.NewCharter(s),
+				models.Issue,
+				count,
+			)
 			if err := issues.Process(repo); err != nil {
 				println(err.Error())
 				os.Exit(1)
