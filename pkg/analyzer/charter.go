@@ -5,6 +5,7 @@ import (
 	"math"
 	"os"
 	"regexp"
+	"strconv"
 
 	"github.com/cheggaaa/pb"
 	"github.com/nimakaviani/github-contributors/pkg/scraper"
@@ -27,6 +28,7 @@ type charter struct {
 	charterMap map[string]interface{}
 	userOrg    map[string]string
 	scraper    scraper.Scraper
+	total      float64
 }
 
 func NewCharter(scraper scraper.Scraper) *charter {
@@ -47,7 +49,8 @@ func (c *charter) Process(repo string, count int) error {
 		return err
 	}
 
-	fmt.Printf("Analyzig the last %d commits on %s\n", int(math.Max(float64(len(users)), float64(count))), repo)
+	c.total = math.Max(float64(len(users)), float64(count))
+	fmt.Printf("Analyzig the top %d contributors on %s\n", int(c.total), repo)
 	bar := pb.StartNew(len(users))
 	utils.Log("> building charter ...")
 	for _, user := range users {
@@ -119,38 +122,60 @@ func (c *charter) parse(login, email string) error {
 
 func (c *charter) Write(expand bool) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{
-		"Org",
-		"Association",
-		"GitHubId",
-		"Email",
-	})
-	table.SetHeaderColor(
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-	)
-	table.SetAutoMergeCells(true)
+
+	if expand {
+		table.SetHeader([]string{
+			"Org",
+			"GitHubId",
+			"Email",
+		})
+		table.SetHeaderColor(
+			tablewriter.Colors{tablewriter.Bold},
+			tablewriter.Colors{tablewriter.Bold},
+			tablewriter.Colors{tablewriter.Bold},
+		)
+		table.SetAutoMergeCells(true)
+	} else {
+		table.SetHeader([]string{
+			"Org",
+			"Count",
+			"Percentage",
+		})
+		table.SetHeaderColor(
+			tablewriter.Colors{tablewriter.Bold},
+			tablewriter.Colors{tablewriter.Bold},
+			tablewriter.Colors{tablewriter.Bold},
+		)
+	}
+
 	table.SetRowLine(true)
 	table.SetBorder(true)
 
 	data := make([][]string, 0)
 	for org, users := range c.charterMap {
-		if !expand {
-			continue
-		}
-
 		count := len(users.(map[string]*Details))
-		for login, details := range users.(map[string]*Details) {
+
+		if expand {
+			for login, details := range users.(map[string]*Details) {
+				data = append(data, []string{
+					fmt.Sprintf("%s \n %.1f%% ", org, (float64(count)/c.total)*100.0),
+					login,
+					details.email,
+				})
+			}
+		} else {
+			if count == 0 {
+				continue
+			}
+
 			data = append(data, []string{
-				fmt.Sprintf("%s (%d)", org, count),
-				details.association,
-				login,
-				details.email,
+				org,
+				strconv.Itoa(count),
+				fmt.Sprintf("%.1f%%", float64(float64(count)/c.total)*100.0),
 			})
 		}
 	}
+
 	table.AppendBulk(data)
 	table.Render()
 }

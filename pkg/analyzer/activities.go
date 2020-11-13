@@ -73,27 +73,40 @@ func (i *activities) Process(repo string) error {
 	return nil
 }
 
-func (i *activities) Write() {
+func (i *activities) Write(expand bool) {
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{
-		"Org",
-		"GitHubId",
-		"Email",
-		"Issue / PR",
-		"Association",
-		"State",
-	})
-	table.SetHeaderColor(
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-		tablewriter.Colors{tablewriter.Bold},
-	)
+	if expand {
+		table.SetHeader([]string{
+			"Org",
+			"GitHubId",
+			"Email",
+			"Issue / PR",
+			"Association",
+			"State",
+		})
+		table.SetHeaderColor(
+			tablewriter.Colors{tablewriter.Bold},
+			tablewriter.Colors{tablewriter.Bold},
+			tablewriter.Colors{tablewriter.Bold},
+			tablewriter.Colors{tablewriter.Bold},
+			tablewriter.Colors{tablewriter.Bold},
+			tablewriter.Colors{tablewriter.Bold},
+		)
+	} else {
+		table.SetHeader([]string{
+			"Org",
+			"GitHubId",
+			"Association",
+		})
+		table.SetHeaderColor(
+			tablewriter.Colors{tablewriter.Bold},
+			tablewriter.Colors{tablewriter.Bold},
+			tablewriter.Colors{tablewriter.Bold},
+		)
+	}
+	table.SetAutoMergeCells(true)
 	table.SetBorder(true)
 	table.SetRowLine(true)
-	table.SetAutoMergeCells(true)
 
 	activities := i.activities
 	sort.Slice(activities, func(i, j int) bool {
@@ -110,13 +123,22 @@ func (i *activities) Write() {
 
 	data := make([][]string, 0)
 	for _, activity := range activities {
-		row := []string{
-			activity.userDetails.org,
-			activity.User.Login,
-			activity.userDetails.email,
-			fmt.Sprintf("%s(%s) : %s \n\n %s", i.activityName, strconv.Itoa(activity.Number), activity.Title, activity.Url),
-			activity.userDetails.association,
-			activity.State,
+		var row []string
+		if expand {
+			row = []string{
+				activity.userDetails.org,
+				activity.User.Login,
+				activity.userDetails.email,
+				fmt.Sprintf("%s(%s) : %s \n\n %s", i.activityName, strconv.Itoa(activity.Number), activity.Title, activity.Url),
+				activity.userDetails.association,
+				activity.State,
+			}
+		} else {
+			row = []string{
+				activity.userDetails.org,
+				activity.User.Login,
+				activity.userDetails.association,
+			}
 		}
 		data = append(data, row)
 	}

@@ -30,7 +30,7 @@ var (
 				println(err.Error())
 				os.Exit(1)
 			}
-			prs.Write()
+			prs.Write(expand)
 		},
 	}
 )

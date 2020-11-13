@@ -51,7 +51,30 @@ Use "github-contrib [command] --help" for more information about a command.
 
 ## Output
 
-Check the list of issues or PRs for insights
+Get higher level insights from the list of contributors
+
+```
+❯ ./github-contrib --repo kubernetes/kubernetes --expand=false
+Analyzig the top 30 contributors on kubernetes/kubernetes
+ 30 / 30 [==================] 100.00% 18s
++----------------+-------+------------+
+|      ORG       | COUNT | PERCENTAGE |
++----------------+-------+------------+
+| microsoft.com  |     1 | 3.3%       |
++----------------+-------+------------+
+| redhat.com     |     4 | 13.3%      |
++----------------+-------+------------+
+| google.com     |    15 | 50.0%      |
++----------------+-------+------------+
+| liggitt.net    |     1 | 3.3%       |
++----------------+-------+------------+
+| bedafamily.com |     1 | 3.3%       |
++----------------+-------+------------+
+| gmail.com      |     6 | 20.0%      |
++----------------+-------+------------+
+```
+
+Or get an extended view when checking contributors, issues, or PRs.
 
 ```
 ❯ ./github-contrib issues --repo kubernetes/kubernetes
@@ -59,39 +82,44 @@ Check the list of issues or PRs for insights
 +---------------+----------------+----------------------------+-----------------------------------------------------------------+-------------+-------+
 |      ORG      |    GITHUBID    |           EMAIL            |                           ISSUE / PR                            | ASSOCIATION | STATE |
 +---------------+----------------+----------------------------+-----------------------------------------------------------------+-------------+-------+
-| google.com    | adtac          | adtac@google.com           | Issue(96527) : promote API priority                             | MEMBER      | open  |
+| google.com    | adtac          | axxxc@google.com           | Issue(96527) : promote API priority                             | MEMBER      | open  |
 |               |                |                            | and fairness types and APIs to beta                             |             |       |
 |               |                |                            | https://api.github.com/repos/kubernetes/kubernetes/issues/96527 |             |       |
 +               +----------------+----------------------------+-----------------------------------------------------------------+             +       +
-|               | apelisse       | apelisse@google.com        | Issue(96480) : Add defaults openapi                             |             |       |
+|               | apelisse       | axxxxxxx@google.com        | Issue(96480) : Add defaults openapi                             |             |       |
 |               |                |                            | https://api.github.com/repos/kubernetes/kubernetes/issues/96480 |             |       |
 +               +----------------+----------------------------+-----------------------------------------------------------------+             +       +
-|               | caesarxuchao   | xuchao@google.com          | Issue(96549) : update golang.org/x/net and golang.org/x/sys     |             |       |
+|               | caesarxuchao   | xxxxxx@google.com          | Issue(96549) : update golang.org/x/net and golang.org/x/sys     |             |       |
 |               |                |                            | https://api.github.com/repos/kubernetes/kubernetes/issues/96549 |             |       |
 +---------------+----------------+----------------------------+-----------------------------------------------------------------+             +       +
-| live.com      | Jefftree       | jeffrey.ying86@live.com    | Issue(96317) : Integrate defaults marker to defaulter-gen       |             |       |
+| live.com      | Jefftree       | jxxxxxxxxxxxxx@live.com    | Issue(96317) : Integrate defaults marker to defaulter-gen       |             |       |
 |               |                |                            | https://api.github.com/repos/kubernetes/kubernetes/issues/96317 |             |       |
 +---------------+----------------+----------------------------+-----------------------------------------------------------------+             +       +
-| microsoft.com | andyzhangx     | xiazhang@microsoft.com     | Issue(96293) : azure file migration go beta in 1.20             |             |       |
+| microsoft.com | andyzhangx     | xxxxxxxx@microsoft.com     | Issue(96293) : azure file migration go beta in 1.20             |             |       |
 |               |                |                            | https://api.github.com/repos/kubernetes/kubernetes/issues/96293 |             |       |
 +               +                +                            +-----------------------------------------------------------------+             +       +
 |               |                |                            | Issue(96546) : Automated cherry pick of #96355: fix pull        |             |       |
 |               |                |                            | image error from multiple ACRs using azure managed              |             |       |
 |               |                |                            | https://api.github.com/repos/kubernetes/kubernetes/issues/96546 |             |       |
 +---------------+----------------+----------------------------+-----------------------------------------------------------------+-------------+       +
-| redhat.com    | smarterclayton | ccoleman@redhat.com        | Issue(96375) : api: Allow MaxSurge to                           | CONTRIBUTOR |       |
+| redhat.com    | smarterclayton | cxxxxxxx@redhat.com        | Issue(96375) : api: Allow MaxSurge to                           | CONTRIBUTOR |       |
 |               |                |                            | be set on DaemonSets during update                              |             |       |
 |               |                |                            | https://api.github.com/repos/kubernetes/kubernetes/issues/96375 |             |       |
 +---------------+----------------+----------------------------+-----------------------------------------------------------------+-------------+       +
-| uservers.net  | puerco         | adolfo.garcia@uservers.net | Issue(96544) : Update 1.18 changelog                            | MEMBER      |       |
+| uservers.net  | puerco         | axxxxxxxxxxxx@uservers.net | Issue(96544) : Update 1.18 changelog                            | MEMBER      |       |
 |               |                |                            | with entries from v1.18.11                                      |             |       |
 |               |                |                            | https://api.github.com/repos/kubernetes/kubernetes/issues/96544 |             |       |
 +---------------+----------------+----------------------------+-----------------------------------------------------------------+             +       +
 | zackz.dev     | knight42       | i@zackz.dev                | Issue(96550) : chore(gce): pass auth flags to KCM and KS        |             |       |
 |               |                |                            | https://api.github.com/repos/kubernetes/kubernetes/issues/96550 |             |       |
 +---------------+----------------+----------------------------+-----------------------------------------------------------------+             +       +
-| gmail.com     | nilo19         | pomelonicky@gmail.com      | Issue(96545) : Update the route table                           |             |       |
+| gmail.com     | nilo19         | pxxxxxxxxxx@gmail.com      | Issue(96545) : Update the route table                           |             |       |
 |               |                |                            | tag in the route reconcile loop                                 |             |       |
 |               |                |                            | https://api.github.com/repos/kubernetes/kubernetes/issues/96545 |             |       |
 +---------------+----------------+----------------------------+-----------------------------------------------------------------+-------------+-------+
 ```
+
+## Contribute
+
+Of course, contributions are very welcome. File issues or PRs if you find this
+useful.
