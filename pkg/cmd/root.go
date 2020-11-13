@@ -50,7 +50,7 @@ func Execute() {
 
 func init() {
 	if token := os.Getenv("GH_EMAIL_TOKEN"); token == "" {
-		msg := fmt.Sprintf(`"GH_EMAIL_TOKEN" needs to be set
+		msg := fmt.Sprintf(`Before you get started, "GH_EMAIL_TOKEN" needs to be set
 The tool requires authenticated requests to retrieve contributor emails, see https://git.io/vxctz.
 To get a token, visit https://github.com/settings/tokens/new?description=github-email.
 You don't need to check any of the checkboxes. Just generate the token, and export it
