@@ -15,6 +15,9 @@ import (
 
 var Anonymous bool
 
+//go:generate go run github.com/maxbrunsfeld/counterfeiter/v6 -generate
+
+//counterfeiter:generate . Scraper
 type Scraper interface {
 	Find(user string) (string, error)
 	Contributors(repo string, count int) ([]models.User, error)

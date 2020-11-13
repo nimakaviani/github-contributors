@@ -85,6 +85,13 @@ func (c *charter) build(login string) error {
 	return c.parse(login, email)
 }
 
+func (c *charter) Org(login string) string {
+	if org, ok := c.userOrg[login]; ok {
+		return org
+	}
+	return ""
+}
+
 func (c *charter) parse(login, email string) error {
 	details, err := extract(login, email)
 	if err != nil {

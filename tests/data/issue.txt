@@ -1,0 +1,170 @@
+[
+  {
+    "url": "https://api.github.com/repos/kubernetes/kubernetes/issues/96500",
+    "repository_url": "https://api.github.com/repos/kubernetes/kubernetes",
+    "labels_url": "https://api.github.com/repos/kubernetes/kubernetes/issues/96500/labels{/name}",
+    "comments_url": "https://api.github.com/repos/kubernetes/kubernetes/issues/96500/comments",
+    "events_url": "https://api.github.com/repos/kubernetes/kubernetes/issues/96500/events",
+    "html_url": "https://github.com/kubernetes/kubernetes/issues/96500",
+    "id": 741364683,
+    "node_id": "MDU6SXNzdWU3NDEzNjQ2ODM=",
+    "number": 96500,
+    "title": "privileged PSP is getting applied to all namespaces regardless of RBAC",
+    "user": {
+      "login": "abhiTamrakar",
+      "id": 8455330,
+      "node_id": "MDQ6VXNlcjg0NTUzMzA=",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/8455330?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/abhiTamrakar",
+      "html_url": "https://github.com/abhiTamrakar",
+      "followers_url": "https://api.github.com/users/abhiTamrakar/followers",
+      "following_url": "https://api.github.com/users/abhiTamrakar/following{/other_user}",
+      "gists_url": "https://api.github.com/users/abhiTamrakar/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/abhiTamrakar/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/abhiTamrakar/subscriptions",
+      "organizations_url": "https://api.github.com/users/abhiTamrakar/orgs",
+      "repos_url": "https://api.github.com/users/abhiTamrakar/repos",
+      "events_url": "https://api.github.com/users/abhiTamrakar/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/abhiTamrakar/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "labels": [
+      {
+        "id": 105146071,
+        "node_id": "MDU6TGFiZWwxMDUxNDYwNzE=",
+        "url": "https://api.github.com/repos/kubernetes/kubernetes/labels/kind/bug",
+        "name": "kind/bug",
+        "color": "e11d21",
+        "default": false,
+        "description": "Categorizes issue or PR as related to a bug."
+      },
+      {
+        "id": 2389815605,
+        "node_id": "MDU6TGFiZWwyMzg5ODE1NjA1",
+        "url": "https://api.github.com/repos/kubernetes/kubernetes/labels/needs-triage",
+        "name": "needs-triage",
+        "color": "ededed",
+        "default": false,
+        "description": "Indicates an issue or PR lacks a label and requires one."
+      },
+      {
+        "id": 357119284,
+        "node_id": "MDU6TGFiZWwzNTcxMTkyODQ=",
+        "url": "https://api.github.com/repos/kubernetes/kubernetes/labels/sig/auth",
+        "name": "sig/auth",
+        "color": "d2b48c",
+        "default": false,
+        "description": "Categorizes an issue or PR as relevant to SIG Auth."
+      }
+    ],
+    "state": "open",
+    "locked": false,
+    "assignee": null,
+    "assignees": [
+
+    ],
+    "milestone": null,
+    "comments": 2,
+    "created_at": "2020-11-12T07:48:54Z",
+    "updated_at": "2020-11-12T08:02:48Z",
+    "closed_at": null,
+    "author_association": "NONE",
+    "active_lock_reason": null,
+    "body": "<!-- Please use this template while reporting a bug and provide as much info as possible. Not doing so may result in your bug not being addressed in a timely manner. Thanks!\r\n\r\nIf the matter is security related, please disclose it privately via https://kubernetes.io/security/\r\n-->\r\n\r\n\r\n**What happened**: privileged PSP is getting applied to all namespaces regardless of RBAC\r\n\r\n**What you expected to happen**: PSP shall be applied as per defined RBAC policies for individual namespaces\r\n\r\n**How to reproduce it (as minimally and precisely as possible)**: Have one privileged PSP and one restricted, with admission controller for PodSecurityPolicy enabled and RBAC to decide the association for PSP on Group: system:serviceaccounts\r\n\r\n*Privileged PSP*\r\n",
+    "performed_via_github_app": null
+  },
+  {
+    "url": "https://api.github.com/repos/kubernetes/kubernetes/issues/96499",
+    "repository_url": "https://api.github.com/repos/kubernetes/kubernetes",
+    "labels_url": "https://api.github.com/repos/kubernetes/kubernetes/issues/96499/labels{/name}",
+    "comments_url": "https://api.github.com/repos/kubernetes/kubernetes/issues/96499/comments",
+    "events_url": "https://api.github.com/repos/kubernetes/kubernetes/issues/96499/events",
+    "html_url": "https://github.com/kubernetes/kubernetes/pull/96499",
+    "id": 741355006,
+    "node_id": "MDExOlB1bGxSZXF1ZXN0NTE5NjgzNDMx",
+    "number": 96499,
+    "title": "Choosing the right source VIP for local endpoints",
+    "user": {
+      "login": "sbangari",
+      "id": 51677049,
+      "node_id": "MDQ6VXNlcjUxNjc3MDQ5",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/51677049?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/sbangari",
+      "html_url": "https://github.com/sbangari",
+      "followers_url": "https://api.github.com/users/sbangari/followers",
+      "following_url": "https://api.github.com/users/sbangari/following{/other_user}",
+      "gists_url": "https://api.github.com/users/sbangari/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/sbangari/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/sbangari/subscriptions",
+      "organizations_url": "https://api.github.com/users/sbangari/orgs",
+      "repos_url": "https://api.github.com/users/sbangari/repos",
+      "events_url": "https://api.github.com/users/sbangari/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/sbangari/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "labels": [
+      {
+        "id": 414883982,
+        "node_id": "MDU6TGFiZWw0MTQ4ODM5ODI=",
+        "url": "https://api.github.com/repos/kubernetes/kubernetes/labels/approved",
+        "name": "approved",
+        "color": "0ffa16",
+        "default": false,
+        "description": "Indicates a PR has been approved by an approver from all required OWNERS files."
+      },
+      {
+        "id": 477397086,
+        "node_id": "MDU6TGFiZWw0NzczOTcwODY=",
+        "url": "https://api.github.com/repos/kubernetes/kubernetes/labels/cncf-cla:%20yes",
+        "name": "cncf-cla: yes",
+        "color": "bfe5bf",
+        "default": false,
+        "description": "Indicates the PR's author has signed the CNCF CLA."
+      },
+      {
+        "id": 116712108,
+        "node_id": "MDU6TGFiZWwxMTY3MTIxMDg=",
+        "url": "https://api.github.com/repos/kubernetes/kubernetes/labels/sig/network",
+        "name": "sig/network",
+        "color": "d2b48c",
+        "default": false,
+        "description": "Categorizes an issue or PR as relevant to SIG Network."
+      },
+      {
+        "id": 253450895,
+        "node_id": "MDU6TGFiZWwyNTM0NTA4OTU=",
+        "url": "https://api.github.com/repos/kubernetes/kubernetes/labels/size/S",
+        "name": "size/S",
+        "color": "77bb00",
+        "default": false,
+        "description": "Denotes a PR that changes 10-29 lines, ignoring generated files."
+      }
+    ],
+    "state": "open",
+    "locked": false,
+    "assignee": null,
+    "assignees": [
+
+    ],
+    "milestone": null,
+    "comments": 4,
+    "created_at": "2020-11-12T07:31:50Z",
+    "updated_at": "2020-11-12T08:03:57Z",
+    "closed_at": null,
+    "author_association": "CONTRIBUTOR",
+    "active_lock_reason": null,
+    "pull_request": {
+      "url": "https://api.github.com/repos/kubernetes/kubernetes/pulls/96499",
+      "html_url": "https://github.com/kubernetes/kubernetes/pull/96499",
+      "diff_url": "https://github.com/kubernetes/kubernetes/pull/96499.diff",
+      "patch_url": "https://github.com/kubernetes/kubernetes/pull/96499.patch"
+    },
+    "body": "<!--  Thanks for sending a pull request!  Here are some tips for you:\r\n\r\n1. If this is your first time, please read our contributor guidelines: https://git.k8s.io/community/contributors/guide/first-contribution.md#your-first-contribution and developer guide https://git.k8s.io/community/contributors/devel/development.md#development-guide\r\n2. Please label this pull request according to what type of issue you are addressing, especially if this is a release targeted pull request. For reference on required PR/issue labels, read here:\r\nhttps://git.k8s.io/community/contributors/devel/sig-release/release.md#issuepr-kind-label\r\n3. Ensure you have added or ran the appropriate tests for your PR: https://git.k8s.io/community/contributors/devel/sig-testing/testing.md\r\n4. If you want *faster* PR reviews, read how: https://git.k8s.io/community/contributors/guide/pull-requests.md#best-practices-for-faster-reviews\r\n5. If the PR is unfinished, see how to mark it: https://git.k8s.io/community/contributors/guide/pull-requests.md#marking-unfinished-pull-requests\r\n-->\r\n\r\n**What type of PR is this?**\r\n\r\n<!--\r\nAdd one of the following kinds:\r\n/kind bug\r\n/kind cleanup\r\n/kind documentation\r\n/kind feature\r\n/kind design\r\n\r\nOptionally add one or more of the following kinds if applicable:\r\n/kind api-change\r\n/kind deprecation\r\n/kind failing-test\r\n/kind flake\r\n/kind regression\r\n-->\r\n\r\n**What this PR does / why we need it**:\r\n\r\n**Which issue(s) this PR fixes**:\r\n<!--\r\n*Automatically closes linked issue when PR is merged.\r\nUsage",
+    "performed_via_github_app": null
+  }
+]
+
