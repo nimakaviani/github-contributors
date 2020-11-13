@@ -49,7 +49,7 @@ func TestCharter(t *testing.T) {
 		t.Fatal("found wrong org for nimakaviani", c.Org("nimakaviani"))
 	}
 
-	if c.Org("tom") != "" {
+	if c.Org("tom") != "unknown" {
 		t.Fatal("found wrong org for tom")
 	}
 
@@ -88,7 +88,7 @@ func TestFindFails(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if c.Org("nimakaviani") != "" {
+	if c.Org("nimakaviani") != "unknown" {
 		t.Fatal("found wrong org for nimakaviani", c.Org("nimakaviani"))
 	}
 }

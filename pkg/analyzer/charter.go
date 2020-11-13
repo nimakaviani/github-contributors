@@ -2,6 +2,7 @@ package analyzer
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"regexp"
 
@@ -46,6 +47,7 @@ func (c *charter) Process(repo string, count int) error {
 		return err
 	}
 
+	fmt.Printf("Analyzig the last %d commits on %s\n", int(math.Max(float64(len(users)), float64(count))), repo)
 	bar := pb.StartNew(len(users))
 	utils.Log("> building charter ...")
 	for _, user := range users {
@@ -89,12 +91,12 @@ func (c *charter) Org(login string) string {
 	if org, ok := c.userOrg[login]; ok {
 		return org
 	}
-	return ""
+	return Unknown
 }
 
 func (c *charter) parse(login, email string) error {
 	details, err := extract(login, email)
-	if err != nil {
+	if err != nil || details.org == "" {
 		unknowns := c.charterMap[Unknown].(map[string]*Details)
 		unknowns[login] = &Details{org: Unknown}
 		c.charterMap[Unknown] = unknowns
