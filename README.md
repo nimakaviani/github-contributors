@@ -26,7 +26,7 @@ Extract the list of contributors by looking at issues or PRs
 
 ```
 ❯ ./github-contrib -h
-github-contrib fetches contribution info for github
+github-contrib fetches contribution info for a github repo
 
 Usage:
   github-contrib [flags]

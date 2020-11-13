@@ -26,7 +26,7 @@ var (
 
 	rootCmd = &cobra.Command{
 		Use:   "github-contrib",
-		Short: "github-contrib fetches contribution info for github",
+		Short: "fetch contribution info for a github repo.",
 
 		Run: func(cmd *cobra.Command, args []string) {
 
