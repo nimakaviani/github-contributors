@@ -51,6 +51,20 @@ type FakeScraper struct {
 		result1 string
 		result2 error
 	}
+	FindInRepoStub        func(string, string) (string, error)
+	findInRepoMutex       sync.RWMutex
+	findInRepoArgsForCall []struct {
+		arg1 string
+		arg2 string
+	}
+	findInRepoReturns struct {
+		result1 string
+		result2 error
+	}
+	findInRepoReturnsOnCall map[int]struct {
+		result1 string
+		result2 error
+	}
 	invocations      map[string][][]interface{}
 	invocationsMutex sync.RWMutex
 }
@@ -250,6 +264,71 @@ func (fake *FakeScraper) FindReturnsOnCall(i int, result1 string, result2 error)
 	}{result1, result2}
 }
 
+func (fake *FakeScraper) FindInRepo(arg1 string, arg2 string) (string, error) {
+	fake.findInRepoMutex.Lock()
+	ret, specificReturn := fake.findInRepoReturnsOnCall[len(fake.findInRepoArgsForCall)]
+	fake.findInRepoArgsForCall = append(fake.findInRepoArgsForCall, struct {
+		arg1 string
+		arg2 string
+	}{arg1, arg2})
+	stub := fake.FindInRepoStub
+	fakeReturns := fake.findInRepoReturns
+	fake.recordInvocation("FindInRepo", []interface{}{arg1, arg2})
+	fake.findInRepoMutex.Unlock()
+	if stub != nil {
+		return stub(arg1, arg2)
+	}
+	if specificReturn {
+		return ret.result1, ret.result2
+	}
+	return fakeReturns.result1, fakeReturns.result2
+}
+
+func (fake *FakeScraper) FindInRepoCallCount() int {
+	fake.findInRepoMutex.RLock()
+	defer fake.findInRepoMutex.RUnlock()
+	return len(fake.findInRepoArgsForCall)
+}
+
+func (fake *FakeScraper) FindInRepoCalls(stub func(string, string) (string, error)) {
+	fake.findInRepoMutex.Lock()
+	defer fake.findInRepoMutex.Unlock()
+	fake.FindInRepoStub = stub
+}
+
+func (fake *FakeScraper) FindInRepoArgsForCall(i int) (string, string) {
+	fake.findInRepoMutex.RLock()
+	defer fake.findInRepoMutex.RUnlock()
+	argsForCall := fake.findInRepoArgsForCall[i]
+	return argsForCall.arg1, argsForCall.arg2
+}
+
+func (fake *FakeScraper) FindInRepoReturns(result1 string, result2 error) {
+	fake.findInRepoMutex.Lock()
+	defer fake.findInRepoMutex.Unlock()
+	fake.FindInRepoStub = nil
+	fake.findInRepoReturns = struct {
+		result1 string
+		result2 error
+	}{result1, result2}
+}
+
+func (fake *FakeScraper) FindInRepoReturnsOnCall(i int, result1 string, result2 error) {
+	fake.findInRepoMutex.Lock()
+	defer fake.findInRepoMutex.Unlock()
+	fake.FindInRepoStub = nil
+	if fake.findInRepoReturnsOnCall == nil {
+		fake.findInRepoReturnsOnCall = make(map[int]struct {
+			result1 string
+			result2 error
+		})
+	}
+	fake.findInRepoReturnsOnCall[i] = struct {
+		result1 string
+		result2 error
+	}{result1, result2}
+}
+
 func (fake *FakeScraper) Invocations() map[string][][]interface{} {
 	fake.invocationsMutex.RLock()
 	defer fake.invocationsMutex.RUnlock()
@@ -259,6 +338,8 @@ func (fake *FakeScraper) Invocations() map[string][][]interface{} {
 	defer fake.contributorsMutex.RUnlock()
 	fake.findMutex.RLock()
 	defer fake.findMutex.RUnlock()
+	fake.findInRepoMutex.RLock()
+	defer fake.findInRepoMutex.RUnlock()
 	copiedInvocations := map[string][][]interface{}{}
 	for key, value := range fake.invocations {
 		copiedInvocations[key] = value

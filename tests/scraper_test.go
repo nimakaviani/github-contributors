@@ -10,6 +10,27 @@ import (
 	"github.com/nimakaviani/github-contributors/pkg/scraper"
 )
 
+func TestFindFromCommits(t *testing.T) {
+	data, err := ioutil.ReadFile("data/commits.txt")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	responseMap := map[string][]byte{"/repos/some-repo/commits": data}
+	srv := serverMock(responseMap)
+	defer srv.Close()
+
+	scraper := scraper.NewGithubScraper(srv.URL)
+	a, err := scraper.FindInRepo("some-repo", "nimakaviani")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if a != "something@gmail.com" {
+		t.Fatal("didnt find the email correctly")
+	}
+}
+
 func TestFindFromProfile(t *testing.T) {
 	data, err := ioutil.ReadFile("data/from_profile.txt")
 	if err != nil {
@@ -97,7 +118,7 @@ func TestFindFromRepos(t *testing.T) {
 	}
 
 	if a != "something@gmail.com" {
-		t.Fatal("didnt find the email correctly")
+		t.Fatal("didnt find the email correctly", a)
 	}
 }
 

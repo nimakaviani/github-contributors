@@ -20,6 +20,7 @@ var Anonymous bool
 //counterfeiter:generate . Scraper
 type Scraper interface {
 	Find(user string) (string, error)
+	FindInRepo(repo, user string) (string, error)
 	Contributors(repo string, count int) ([]models.User, error)
 	Activities(repo string, activity, count int) ([]models.Activity, error)
 }
@@ -32,29 +33,55 @@ func NewGithubScraper(url string) Scraper {
 	return &githubScraper{url: url}
 }
 
+func (g githubScraper) FindInRepo(repo, user string) (string, error) {
+	// find from commits
+	email, err := g.fromCommits(repo, user)
+	if err == nil {
+		utils.Log(">> found from commits", email)
+		return email, nil
+	}
+
+	return g.Find(user)
+}
+
 func (g githubScraper) Find(user string) (string, error) {
-	// // find from profile
+	// find from profile
 	ghUser, err := g.fromProfile(user)
 	if err == nil {
-		utils.Log(">> found from email", ghUser.Email)
-		return ghUser.Email, nil
+		utils.Log(">> found from profile", ghUser.Email)
+		return ghUser.Email, err
 	}
 
 	// find from recent activity
-	email, err := g.fromEvents(user, ghUser)
+	email, err := g.fromEvents(user, ghUser.Name)
 	if err == nil {
 		utils.Log(">> found from events", email)
 		return email, nil
 	}
 
 	// from repo activities
-	email, err = g.fromRepos(user, ghUser)
+	email, err = g.fromRepos(user, ghUser.Name)
 	if err == nil {
 		utils.Log(">> found from repos", email)
 		return email, nil
 	}
 
 	return "", err
+}
+
+func (g githubScraper) fromCommits(repo, user string) (string, error) {
+	activity := []models.RepoCommits{}
+	if err := queryGithub("activity", fmt.Sprintf("%s/repos/%s/commits?author=%s", g.url, repo, user), &activity); err != nil {
+		return "", err
+	}
+
+	for _, a := range activity {
+		author := a.Commit.Author
+		if author.Email != "" && !strings.Contains(author.Email, "noreply") {
+			return author.Email, nil
+		}
+	}
+	return "", errors.New("not found")
 }
 
 func (g githubScraper) fromProfile(user string) (models.User, error) {
@@ -70,12 +97,13 @@ func (g githubScraper) fromProfile(user string) (models.User, error) {
 	return ghUser, nil
 }
 
-func (g githubScraper) fromEvents(user string, ghUser models.User) (string, error) {
+func (g githubScraper) fromEvents(user, userName string) (string, error) {
 	ghEvents := []models.Event{}
-	if err := queryGithub("events", fmt.Sprintf("%s/users/%s/events?per_page=10", g.url, user), &ghEvents); err != nil {
+	if err := queryGithub("events", fmt.Sprintf("%s/users/%s/events?per_page=100", g.url, user), &ghEvents); err != nil {
 		return "", err
 	}
 
+	var count int = 5
 	var email string
 	for _, e := range ghEvents {
 		if e.Type == "PushEvent" {
@@ -90,9 +118,13 @@ func (g githubScraper) fromEvents(user string, ghUser models.User) (string, erro
 
 			for _, p := range commits {
 				email = p.Author.Email
-				if p.Author.Name == ghUser.Name && email != "" && !strings.Contains(email, "noreply") {
+				if p.Author.Name == userName && email != "" && !strings.Contains(email, "noreply") {
 					return email, nil
 				}
+			}
+
+			if count -= 1; count == 0 {
+				break
 			}
 		}
 	}
@@ -100,28 +132,16 @@ func (g githubScraper) fromEvents(user string, ghUser models.User) (string, erro
 	return "", errors.New("not found")
 }
 
-func (g githubScraper) fromRepos(user string, ghUser models.User) (string, error) {
+func (g githubScraper) fromRepos(user, userName string) (string, error) {
 	repos := []models.Repo{}
 	if err := queryGithub("repos", fmt.Sprintf("%s/users/%s/repos?type=owner&sort=updated&per_page=5", g.url, user), &repos); err != nil {
 		return "", err
 	}
 
-	activity := []models.RepoCommits{}
 	for _, r := range repos {
-		if err := queryGithub("activity", fmt.Sprintf("%s/repos/%s/commits", g.url, r.FullName), &activity); err != nil {
-			return "", err
-		}
-
-		for _, a := range activity {
-			committer := a.Commit.Committer
-			if committer.Name == ghUser.Name && committer.Email != "" && !strings.Contains(committer.Email, "noreply") {
-				return committer.Email, nil
-			}
-
-			author := a.Commit.Author
-			if author.Name == ghUser.Name && author.Email != "" && !strings.Contains(author.Email, "noreply") {
-				return author.Email, nil
-			}
+		email, err := g.fromCommits(r.FullName, user)
+		if err == nil {
+			return email, nil
 		}
 	}
 

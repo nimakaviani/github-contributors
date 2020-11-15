@@ -24,7 +24,7 @@ func TestCharter(t *testing.T) {
 		},
 	}, nil)
 
-	fakeScraper.FindCalls(func(login string) (string, error) {
+	fakeScraper.FindInRepoCalls(func(repo, login string) (string, error) {
 		switch login {
 		case "nimakaviani":
 			return "something@gmail.com", nil
@@ -41,7 +41,8 @@ func TestCharter(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if fakeScraper.FindArgsForCall(0) != "nimakaviani" {
+	repo, login := fakeScraper.FindInRepoArgsForCall(0)
+	if repo != "test" || login != "nimakaviani" {
 		t.Fatal("didnt query for the right user")
 	}
 
@@ -53,7 +54,7 @@ func TestCharter(t *testing.T) {
 		t.Fatal("found wrong org for tom")
 	}
 
-	if fakeScraper.FindCallCount() != 2 || fakeScraper.ContributorsCallCount() != 1 {
+	if fakeScraper.FindInRepoCallCount() != 2 || fakeScraper.ContributorsCallCount() != 1 {
 		t.Fatal("incorrect call count")
 	}
 }

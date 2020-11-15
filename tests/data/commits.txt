@@ -1,0 +1,150 @@
+[
+  {
+    "sha": "1803eb29781795460900ac3bfc597dadfe84129f",
+    "node_id": "MDY6Q29tbWl0NzI0Nzc3NTI6MTgwM2ViMjk3ODE3OTU0NjA5MDBhYzNiZmM1OTdkYWRmZTg0MTI5Zg==",
+    "commit": {
+      "author": {
+        "name": "Nima Kaviani",
+        "email": "something@gmail.com",
+        "date": "2020-10-06T00:08:00Z"
+      },
+      "committer": {
+        "name": "GitHub",
+        "email": "noreply@github.com",
+        "date": "2020-10-06T00:08:00Z"
+      },
+      "message": "Merge pull request #5512 from pulumi/lukehoban/fix_5484\n\nTesting https://github.com/pulumi/pulumi/pull/5484",
+      "tree": {
+        "sha": "2eba7d25f38ec5f80fb5517198e1d90e485ae6eb",
+        "url": "https://api.github.com/repos/pulumi/pulumi/git/trees/2eba7d25f38ec5f80fb5517198e1d90e485ae6eb"
+      },
+      "url": "https://api.github.com/repos/pulumi/pulumi/git/commits/1803eb29781795460900ac3bfc597dadfe84129f",
+      "comment_count": 0,
+      "verification": {
+        "verified": true,
+        "reason": "valid",
+        "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsBcBAABCAAQBQJfe7VgCRBK7hj4Ov3rIwAAdHIIAHPapGXkQhmvCHvpGI5qi3t5\nXiICtE6nY1M31nmmHpAwwoxi2f0w69qpNIv1YBPKuiQ1UQ0nYIUSkNl+mXuDMmeK\namFzJPXDFJI0XWuVsagpu684nQkmMqZNyzwAI0SH8qNqD9Itr7eUi5aQcdxzfYBm\n7Z3r7w62jci+9wlZSODZZTuyaRJkKgfTpx6mMUlC/jOFsvfyu772NDwmPRYrNpHz\ncfHnQkQ0uHiMqNd3daIFN9xwK0DyMfYohbL6eAxuZGCh2WmCAPE0FlsTxHOUBdeS\nAE0ZUwipyNtMsqhV4rczX2OyaGO3lBaSE3lCFSMz9U5SMujo59tEOVZaUCdx69M=\n=+L9D\n-----END PGP SIGNATURE-----\n",
+        "payload": "tree 2eba7d25f38ec5f80fb5517198e1d90e485ae6eb\nparent 12e5e46c73869ed9e2b85240c16d9eee5f98f777\nparent 32f13fabfa392086a0e8e93877229834be785c0c\nauthor Luke Hoban <luke@pulumi.com> 1601942880 -0700\ncommitter GitHub <noreply@github.com> 1601942880 -0700\n\nMerge pull request #5512 from pulumi/lukehoban/fix_5484\n\nTesting https://github.com/pulumi/pulumi/pull/5484"
+      }
+    },
+    "url": "https://api.github.com/repos/pulumi/pulumi/commits/1803eb29781795460900ac3bfc597dadfe84129f",
+    "html_url": "https://github.com/pulumi/pulumi/commit/1803eb29781795460900ac3bfc597dadfe84129f",
+    "comments_url": "https://api.github.com/repos/pulumi/pulumi/commits/1803eb29781795460900ac3bfc597dadfe84129f/comments",
+    "author": {
+      "login": "nimakaviani",
+      "id": 223467,
+      "node_id": "MDQ6VXNlcjIyMzQ2Nw==",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/223467?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/lukehoban",
+      "html_url": "https://github.com/lukehoban",
+      "followers_url": "https://api.github.com/users/lukehoban/followers",
+      "following_url": "https://api.github.com/users/lukehoban/following{/other_user}",
+      "gists_url": "https://api.github.com/users/lukehoban/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/lukehoban/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/lukehoban/subscriptions",
+      "organizations_url": "https://api.github.com/users/lukehoban/orgs",
+      "repos_url": "https://api.github.com/users/lukehoban/repos",
+      "events_url": "https://api.github.com/users/lukehoban/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/lukehoban/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "12e5e46c73869ed9e2b85240c16d9eee5f98f777",
+        "url": "https://api.github.com/repos/pulumi/pulumi/commits/12e5e46c73869ed9e2b85240c16d9eee5f98f777",
+        "html_url": "https://github.com/pulumi/pulumi/commit/12e5e46c73869ed9e2b85240c16d9eee5f98f777"
+      },
+      {
+        "sha": "32f13fabfa392086a0e8e93877229834be785c0c",
+        "url": "https://api.github.com/repos/pulumi/pulumi/commits/32f13fabfa392086a0e8e93877229834be785c0c",
+        "html_url": "https://github.com/pulumi/pulumi/commit/32f13fabfa392086a0e8e93877229834be785c0c"
+      }
+    ]
+  },
+  {
+    "sha": "32f13fabfa392086a0e8e93877229834be785c0c",
+    "node_id": "MDY6Q29tbWl0NzI0Nzc3NTI6MzJmMTNmYWJmYTM5MjA4NmEwZThlOTM4NzcyMjk4MzRiZTc4NWMwYw==",
+    "commit": {
+      "author": {
+        "name": "Nima Kaviani",
+        "email": "something@gmail.com",
+        "date": "2020-10-05T20:52:23Z"
+      },
+      "committer": {
+        "name": "Luke Hoban",
+        "email": "luke@pulumi.com",
+        "date": "2020-10-05T20:52:23Z"
+      },
+      "message": "Merge branch 'fix_gzip_compression' of https://github.com/birdypme/pulumi into birdypme-fix_gzip_compression",
+      "tree": {
+        "sha": "2eba7d25f38ec5f80fb5517198e1d90e485ae6eb",
+        "url": "https://api.github.com/repos/pulumi/pulumi/git/trees/2eba7d25f38ec5f80fb5517198e1d90e485ae6eb"
+      },
+      "url": "https://api.github.com/repos/pulumi/pulumi/git/commits/32f13fabfa392086a0e8e93877229834be785c0c",
+      "comment_count": 0,
+      "verification": {
+        "verified": false,
+        "reason": "unsigned",
+        "signature": null,
+        "payload": null
+      }
+    },
+    "url": "https://api.github.com/repos/pulumi/pulumi/commits/32f13fabfa392086a0e8e93877229834be785c0c",
+    "html_url": "https://github.com/pulumi/pulumi/commit/32f13fabfa392086a0e8e93877229834be785c0c",
+    "comments_url": "https://api.github.com/repos/pulumi/pulumi/commits/32f13fabfa392086a0e8e93877229834be785c0c/comments",
+    "author": {
+      "login": "nimakaviani",
+      "id": 223467,
+      "node_id": "MDQ6VXNlcjIyMzQ2Nw==",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/223467?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/lukehoban",
+      "html_url": "https://github.com/lukehoban",
+      "followers_url": "https://api.github.com/users/lukehoban/followers",
+      "following_url": "https://api.github.com/users/lukehoban/following{/other_user}",
+      "gists_url": "https://api.github.com/users/lukehoban/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/lukehoban/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/lukehoban/subscriptions",
+      "organizations_url": "https://api.github.com/users/lukehoban/orgs",
+      "repos_url": "https://api.github.com/users/lukehoban/repos",
+      "events_url": "https://api.github.com/users/lukehoban/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/lukehoban/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "committer": {
+      "login": "lukehoban",
+      "id": 223467,
+      "node_id": "MDQ6VXNlcjIyMzQ2Nw==",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/223467?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/lukehoban",
+      "html_url": "https://github.com/lukehoban",
+      "followers_url": "https://api.github.com/users/lukehoban/followers",
+      "following_url": "https://api.github.com/users/lukehoban/following{/other_user}",
+      "gists_url": "https://api.github.com/users/lukehoban/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/lukehoban/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/lukehoban/subscriptions",
+      "organizations_url": "https://api.github.com/users/lukehoban/orgs",
+      "repos_url": "https://api.github.com/users/lukehoban/repos",
+      "events_url": "https://api.github.com/users/lukehoban/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/lukehoban/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "parents": [
+      {
+        "sha": "12e5e46c73869ed9e2b85240c16d9eee5f98f777",
+        "url": "https://api.github.com/repos/pulumi/pulumi/commits/12e5e46c73869ed9e2b85240c16d9eee5f98f777",
+        "html_url": "https://github.com/pulumi/pulumi/commit/12e5e46c73869ed9e2b85240c16d9eee5f98f777"
+      },
+      {
+        "sha": "408d3cf219fd80a66011cfc2f8181ea7c73cd299",
+        "url": "https://api.github.com/repos/pulumi/pulumi/commits/408d3cf219fd80a66011cfc2f8181ea7c73cd299",
+        "html_url": "https://github.com/pulumi/pulumi/commit/408d3cf219fd80a66011cfc2f8181ea7c73cd299"
+      }
+    ]
+  }
+]

@@ -26,7 +26,7 @@ func TestActivities(t *testing.T) {
 		},
 	}, nil)
 
-	fakeScraper.FindCalls(func(login string) (string, error) {
+	fakeScraper.FindInRepoCalls(func(repo, login string) (string, error) {
 		switch login {
 		case "nimakaviani":
 			return "something@gmail.com", nil
@@ -48,7 +48,8 @@ func TestActivities(t *testing.T) {
 		t.Fatal("wrong argumens for activity")
 	}
 
-	if login := fakeScraper.FindArgsForCall(0); login != "nimakaviani" {
+	repo, login := fakeScraper.FindInRepoArgsForCall(0)
+	if repo != "some-repo" || login != "nimakaviani" {
 		t.Fatal("didnt look for the user")
 	}
 

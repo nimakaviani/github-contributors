@@ -60,7 +60,7 @@ func (i *activities) Process(repo string) error {
 	for _, activity := range activities {
 		bar.Increment()
 
-		details, err := i.charter.Associate(activity.User.Login, activity.AuthorAssociation)
+		details, err := i.charter.Associate(repo, activity.User.Login, activity.AuthorAssociation)
 		if err != nil {
 			continue
 		}

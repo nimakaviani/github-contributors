@@ -54,7 +54,7 @@ func (c *charter) Process(repo string, count int) error {
 	bar := pb.StartNew(len(users))
 	utils.Log("> building charter ...")
 	for _, user := range users {
-		err := c.build(user.Login)
+		err := c.build(repo, user.Login)
 		if err != nil {
 			utils.Log(user.Login, err.Error())
 		}
@@ -67,9 +67,9 @@ func (c *charter) Process(repo string, count int) error {
 	return nil
 }
 
-func (c *charter) Associate(login, association string) (*Details, error) {
+func (c *charter) Associate(repo, login, association string) (*Details, error) {
 	if _, ok := c.userOrg[login]; !ok {
-		err := c.build(login)
+		err := c.build(repo, login)
 		if err != nil {
 			return nil, err
 		}
@@ -81,8 +81,8 @@ func (c *charter) Associate(login, association string) (*Details, error) {
 	return userDetails, nil
 }
 
-func (c *charter) build(login string) error {
-	email, err := c.scraper.Find(login)
+func (c *charter) build(repo, login string) error {
+	email, err := c.scraper.FindInRepo(repo, login)
 	if err != nil {
 		return err
 	}
