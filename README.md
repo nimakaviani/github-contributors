@@ -43,6 +43,7 @@ Flags:
   -d, --debug             debug mode
   -e, --expand            expand user info (default true)
   -h, --help              help for github-contrib
+  -o, --output string     output format (json)
   -r, --repo string       project repo
   -u, --unauthenticated   unauthenticated gh call
 
