@@ -1,20 +1,22 @@
 package analyzer
 
 import (
+	"encoding/json"
 	"fmt"
 	"math"
 	"os"
 	"regexp"
 	"strconv"
 
-	"github.com/cheggaaa/pb"
+	"github.com/cheggaaa/pb/v3"
 	"github.com/nimakaviani/github-contributors/pkg/scraper"
 	"github.com/nimakaviani/github-contributors/pkg/utils"
 	"github.com/olekukonko/tablewriter"
 )
 
 const (
-	Unknown = "unknown"
+	Unknown    = "unknown"
+	JsonFormat = "json"
 )
 
 type Details struct {
@@ -50,8 +52,13 @@ func (c *charter) Process(repo string, count int) error {
 	}
 
 	c.total = math.Max(float64(len(users)), float64(count))
-	fmt.Printf("Analyzig the top %d contributors on %s\n", int(c.total), repo)
+	fmt.Fprintf(os.Stderr, "Analyzig the top %d contributors on %s\n", int(c.total), repo)
+
 	bar := pb.StartNew(len(users))
+	defer bar.Finish()
+	defer utils.Log("> done")
+	defer utils.Log(">> RESULTS")
+
 	utils.Log("> building charter ...")
 	for _, user := range users {
 		err := c.build(repo, user.Login)
@@ -61,9 +68,6 @@ func (c *charter) Process(repo string, count int) error {
 		bar.Increment()
 	}
 
-	bar.Finish()
-	utils.Log("> done")
-	utils.Log(">> RESULTS")
 	return nil
 }
 
@@ -120,64 +124,103 @@ func (c *charter) parse(login, email string) error {
 	return nil
 }
 
-func (c *charter) Write(expand bool) {
-	table := tablewriter.NewWriter(os.Stdout)
-
-	if expand {
-		table.SetHeader([]string{
-			"Org",
-			"GitHubId",
-			"Email",
-		})
-		table.SetHeaderColor(
-			tablewriter.Colors{tablewriter.Bold},
-			tablewriter.Colors{tablewriter.Bold},
-			tablewriter.Colors{tablewriter.Bold},
-		)
-		table.SetAutoMergeCells(true)
-	} else {
-		table.SetHeader([]string{
-			"Org",
-			"Count",
-			"Percentage",
-		})
-		table.SetHeaderColor(
-			tablewriter.Colors{tablewriter.Bold},
-			tablewriter.Colors{tablewriter.Bold},
-			tablewriter.Colors{tablewriter.Bold},
-		)
+func (c *charter) Write(expand bool, format string) error {
+	type contributor struct {
+		Login string `json:"login"`
+		Email string `json:"email"`
 	}
 
-	table.SetRowLine(true)
-	table.SetBorder(true)
+	type jsonOutput struct {
+		OrgName      string        `json:"org"`
+		Percentage   string        `json:"percentage"`
+		Contributors []contributor `json:"contributors,omitempty"`
+	}
 
+	output := []jsonOutput{}
 	data := make([][]string, 0)
+
 	for org, users := range c.charterMap {
 		count := len(users.(map[string]*Details))
+		percentage := float64(float64(count)/c.total) * 100.0
+
+		outputItem := jsonOutput{
+			OrgName:    org,
+			Percentage: fmt.Sprintf("%.1f%%", percentage),
+		}
 
 		if expand {
 			for login, details := range users.(map[string]*Details) {
 				data = append(data, []string{
-					fmt.Sprintf("%s \n %.1f%% ", org, (float64(count)/c.total)*100.0),
+					fmt.Sprintf("%s \n %.1f%% ", org, percentage),
 					login,
 					details.email,
 				})
-			}
-		} else {
-			if count == 0 {
-				continue
-			}
 
+				outputItem.Contributors = append(
+					outputItem.Contributors, contributor{
+						Login: login,
+						Email: details.email,
+					})
+			}
+		}
+
+		if count == 0 {
+			continue
+		}
+
+		if !expand {
 			data = append(data, []string{
 				org,
 				strconv.Itoa(count),
-				fmt.Sprintf("%.1f%%", float64(float64(count)/c.total)*100.0),
+				fmt.Sprintf("%.1f%% ", percentage),
 			})
 		}
+
+		output = append(output, outputItem)
 	}
 
-	table.AppendBulk(data)
-	table.Render()
+	if format != JsonFormat {
+		table := tablewriter.NewWriter(os.Stdout)
+
+		if expand {
+			table.SetHeader([]string{
+				"Org",
+				"GitHubId",
+				"Email",
+			})
+			table.SetHeaderColor(
+				tablewriter.Colors{tablewriter.Bold},
+				tablewriter.Colors{tablewriter.Bold},
+				tablewriter.Colors{tablewriter.Bold},
+			)
+			table.SetAutoMergeCells(true)
+		} else {
+			table.SetHeader([]string{
+				"Org",
+				"Count",
+				"Percentage",
+			})
+			table.SetHeaderColor(
+				tablewriter.Colors{tablewriter.Bold},
+				tablewriter.Colors{tablewriter.Bold},
+				tablewriter.Colors{tablewriter.Bold},
+			)
+		}
+
+		table.SetRowLine(true)
+		table.SetBorder(true)
+		table.AppendBulk(data)
+		table.Render()
+		return nil
+	}
+
+	jsonData, err := json.Marshal(output)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(string(jsonData))
+	return nil
 }
 
 func extract(login, email string) (Details, error) {

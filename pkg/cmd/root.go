@@ -21,6 +21,7 @@ const (
 
 var (
 	repo   string
+	output string
 	expand bool
 	count  int
 
@@ -36,7 +37,10 @@ var (
 				os.Exit(1)
 			}
 
-			charter.Write(expand)
+			if err := charter.Write(expand, output); err != nil {
+				println(err.Error())
+				os.Exit(1)
+			}
 		},
 	}
 )
@@ -66,4 +70,5 @@ in your terminal: "export GH_EMAIL_TOKEN=<token>"
 	rootCmd.PersistentFlags().BoolVarP(&scraper.Anonymous, "unauthenticated", "u", false, "unauthenticated gh call")
 	rootCmd.PersistentFlags().BoolVarP(&utils.Debug, "debug", "d", false, "debug mode")
 	rootCmd.PersistentFlags().IntVarP(&count, "count", "c", 30, "count of items to analyze")
+	rootCmd.PersistentFlags().StringVarP(&output, "output", "o", "", "output format")
 }

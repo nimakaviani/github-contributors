@@ -30,7 +30,10 @@ var (
 				println(err.Error())
 				os.Exit(1)
 			}
-			prs.Write(expand)
+			if err := prs.Write(expand, output); err != nil {
+				println(err.Error())
+				os.Exit(1)
+			}
 		},
 	}
 )

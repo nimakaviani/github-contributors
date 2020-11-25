@@ -39,7 +39,10 @@ var (
 				println(err.Error())
 				os.Exit(1)
 			}
-			issues.Write(expand)
+			if err := issues.Write(expand, output); err != nil {
+				println(err.Error())
+				os.Exit(1)
+			}
 		},
 	}
 )
